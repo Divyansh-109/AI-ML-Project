@@ -33,6 +33,22 @@
 
             <h3>Nutrition & Insights</h3>
             <div id="ai-output" class="text-block">Upload an image and click submit to get details.</div>
+            <h3>Ask About This Food</h3>
+            <input type="text" id="userQuestion" placeholder="Ask any question about the food..."
+                style="width:90%; padding:8px; border-radius:8px; border:1px solid #ccc; margin-top:8px;">
+            <button class="button" onclick="submitUserQuery()">Ask</button>
+
+            <div id="suggested-questions" style="margin-top:12px; font-size:13px; color:#555;">
+                <strong>Suggestions:</strong>
+                <span class="suggestion" onclick="fillSuggestion('Is this good for weight loss?')">Weight Loss</span> |
+                <span class="suggestion" onclick="fillSuggestion('Can diabetics eat this?')">Diabetic Friendly?</span> |
+                <span class="suggestion" onclick="fillSuggestion('How often should I eat this?')">Portion Advice</span>
+                |
+                <span class="suggestion" onclick="fillSuggestion('Is this high in protein?')">Protein Info</span>
+            </div>
+
+            <div id="custom-ai-output" class="text-block" style="margin-top:15px;"></div>
+
         </div>
 
     </main>

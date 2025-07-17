@@ -197,5 +197,92 @@ function resetApp() {
     document.getElementById("detected-food").innerHTML = "No food detected yet.";
     document.getElementById("ai-output").innerHTML = "Upload an image and click submit to get details.";
     document.getElementById("submitBtn").disabled = true;
+    document.getElementById("custom-ai-output").innerHTML = "";
+    document.getElementById("userQuestion").value = "";
+
     selectedImage = null;
+}
+
+async function submitUserQuery() {
+    const question = document.getElementById("userQuestion").value.trim();
+    const foodName = document.getElementById("detected-food").innerText.replace("🍔 Detected: ", "").replace(/<[^>]+>/g, "");
+
+    if (!question) {
+        alert("Please enter your question about the food.");
+        return;
+    }
+
+    const prompt = `
+You are a concise nutrition expert AI.
+
+Answer the following **user's custom question** about the food item "${foodName}":
+
+Question: "${question}"
+
+Respond in this **exact JSON structure**:
+
+{
+  "food_name": "${foodName}",
+  "user_question": "${question}",
+  "answer": ""
+}
+
+Guidelines:
+- Use **simple, short sentences (max 40 words).**
+- Answer directly about "${foodName}" only.
+- Be factual, no assumptions.
+`;
+
+    const body = { contents: [{ parts: [{ text: prompt }] }] };
+
+    document.getElementById("custom-ai-output").innerHTML = "⏳ Generating answer...";
+
+    try {
+        const response = await fetch(GEMINI_API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+        const aiResponse = data.candidates[0].content.parts[0].text;
+
+        displayCustomAIOutput(aiResponse);
+
+    } catch (err) {
+        document.getElementById("custom-ai-output").innerHTML = "⚠️ Network error: " + err.message;
+    }
+}
+
+async function displayCustomAIOutput(aiText) {
+    try {
+        const jsonMatch = aiText.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+            document.getElementById("custom-ai-output").innerHTML = "⚠️ Could not parse AI response.";
+            return;
+        }
+
+        const jsonData = JSON.parse(jsonMatch[0]);
+        const container = document.getElementById("custom-ai-output");
+        container.innerHTML = "";
+
+        const sectionDiv = document.createElement("div");
+        sectionDiv.classList.add("ai-output-section");
+        container.appendChild(sectionDiv);
+
+        const titleEl = document.createElement("strong");
+        sectionDiv.appendChild(titleEl);
+        await typeText(titleEl, "Your Answer: ", 20, false);
+
+        const p = document.createElement("p");
+        sectionDiv.appendChild(p);
+        await typeText(p, jsonData.answer, 20, false);
+
+    } catch (err) {
+        document.getElementById("custom-ai-output").innerHTML = "⚠️ Failed to parse AI response.<br><pre>" + aiText + "</pre>";
+    }
+}
+
+function fillSuggestion(text) {
+    document.getElementById("userQuestion").value = text;
 }
