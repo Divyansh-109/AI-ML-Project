@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AI Food Nutrition Guide 🍔🥗🍕</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <header>🍽️ AI Food Classifier & Nutrition Guide</header>
+
+    <main>
+
+        <div class="section" id="input-section">
+            <h3>Select Image or Use Webcam</h3>
+            <button class="button" onclick="initWebcam()">Start Webcam</button><br>
+            <input type="file" id="fileInput" accept="image/*" /><br>
+            <button class="button" onclick="submitForPrediction()" id="submitBtn" disabled>Submit</button>
+            <button class="button" onclick="resetApp()">Reset / Reselect</button>
+            <div id="webcam-container"></div>
+            <div id="uploaded-image-container"></div>
+        </div>
+
+        <div class="section" id="output-section">
+            <h3>Detected Food</h3>
+            <div id="detected-food" class="text-block">No food detected yet.</div>
+
+            <h3>Nutrition & Insights</h3>
+            <div id="ai-output" class="text-block">Upload an image and click submit to get details.</div>
+        </div>
+
+    </main>
+
+    <script type="text/javascript" src="script.js"></script>
+
+</body>
+
+</html>
